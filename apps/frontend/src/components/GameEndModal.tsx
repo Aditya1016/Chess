@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import WhiteKing from '../../public/wk.png';
 import BlackKing from '../../public/bk.png';
-import { GameResult, Result } from '@/screens/Game';
+import { GameResult } from '@/screens/Game';
+import { Result } from '@/constants/result';
 
 interface ModalProps {
   blackPlayer?: { id: string; name: string };

@@ -22,7 +22,7 @@ export const MobileSidebar = () => {
         <SheetTrigger asChild>
           <div className="flex items-center justify-center gap-2">
             <MenuIcon />
-            <h1 className="text-lg font-semibold">100xchess</h1>
+            <h1 className="text-lg font-semibold">chess</h1>
           </div>
         </SheetTrigger>
         <SheetContent
@@ -31,7 +31,7 @@ export const MobileSidebar = () => {
         >
           <div className="flex flex-col justify-start">
             <h1 className="text-center text-white text-2xl font-bold tracking-tighter ">
-              100xchess
+              Chess
             </h1>
             <SideNav items={UpperNavItems} setOpen={setOpen} />
           </div>
