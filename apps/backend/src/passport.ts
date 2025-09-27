@@ -1,8 +1,8 @@
-import passport from "passport";
-import { Strategy as GoogleStrategy, Profile as GoogleProfile } from "passport-google-oauth20";
-import { Strategy as GithubStrategy, Profile as GithubProfile } from "passport-github2";
-import dotenv from "dotenv";
-import { db } from "./db";
+import passport from 'passport';
+import { Strategy as GoogleStrategy, Profile as GoogleProfile } from 'passport-google-oauth20';
+import { Strategy as GithubStrategy, Profile as GithubProfile } from 'passport-github2';
+import dotenv from 'dotenv';
+import { db } from './db';
 
 import { AuthProvider } from '@prisma/client';
 
@@ -17,12 +17,12 @@ interface GithubEmailRes {
   email: string;
   primary: boolean;
   verified: boolean;
-  visibility: "private" | "public";
+  visibility: 'private' | 'public';
 }
 
 export function initPassport() {
   if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !GITHUB_CLIENT_ID || !GITHUB_CLIENT_SECRET) {
-    throw new Error("Missing environment variables for authentication providers");
+    throw new Error('Missing environment variables for authentication providers');
   }
 
   // ✅ Google OAuth Strategy
@@ -31,7 +31,10 @@ export function initPassport() {
       {
         clientID: GOOGLE_CLIENT_ID,
         clientSecret: GOOGLE_CLIENT_SECRET,
-        callbackURL: "http://localhost:8080/auth/google/callback", // FULL URL for localhost
+        callbackURL:
+          process.env.NODE_ENV === 'production'
+            ? 'https://chess-f69t.onrender.com/auth/google/callback'
+            : 'http://localhost:8080/auth/google/callback',
       },
       async function (accessToken, refreshToken, profile: GoogleProfile, done) {
         try {
@@ -39,7 +42,7 @@ export function initPassport() {
             create: {
               email: profile.emails?.[0].value || `${profile.id}@google-oauth.com`,
               name: profile.displayName,
-              provider: "GOOGLE",
+              provider: 'GOOGLE',
             },
             update: {
               name: profile.displayName,
@@ -78,16 +81,11 @@ export function initPassport() {
       {
         clientID: GITHUB_CLIENT_ID,
         clientSecret: GITHUB_CLIENT_SECRET,
-        callbackURL: "http://localhost:8080/auth/github/callback",
+        callbackURL: 'http://localhost:8080/auth/github/callback',
       } as GithubStrategyConfig,
-      async function (
-        accessToken: string, 
-        refreshToken: string, 
-        profile: GithubProfile, 
-        done: DoneCallback
-      ) {
+      async function (accessToken: string, refreshToken: string, profile: GithubProfile, done: DoneCallback) {
         try {
-          const res = await fetch("https://api.github.com/user/emails", {
+          const res = await fetch('https://api.github.com/user/emails', {
             headers: { Authorization: `token ${accessToken}` },
           });
           const data: GithubEmailRes[] = await res.json();
@@ -96,11 +94,11 @@ export function initPassport() {
           const user = await db.user.upsert({
             create: {
               email: primaryEmail?.email || `${profile.id}@github-oauth.com`,
-              name: profile.displayName || profile.username || "GitHub User",
-              provider: "GITHUB",
+              name: profile.displayName || profile.username || 'GitHub User',
+              provider: 'GITHUB',
             },
             update: {
-              name: profile.displayName || profile.username || "GitHub User",
+              name: profile.displayName || profile.username || 'GitHub User',
             },
             where: {
               email: primaryEmail?.email || `${profile.id}@github-oauth.com`,
