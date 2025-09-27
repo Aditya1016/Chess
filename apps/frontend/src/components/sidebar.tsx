@@ -35,7 +35,7 @@ export default function Sidebar({ className }: SidebarProps) {
   return (
     <nav
       className={cn(
-        `relative hidden h-screen pt-4 md:block bg-bgAuxiliary1 text-white w-12 lg:w-36 top-0 relative sticky`,
+        `hidden h-screen pt-4 md:block bg-bgAuxiliary1 text-white w-12 lg:w-36 top-0 sticky`,
         className
       )}
     >
