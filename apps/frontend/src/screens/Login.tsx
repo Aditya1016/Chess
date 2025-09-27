@@ -9,7 +9,7 @@ const BACKEND_URL =
 const Login = () => {
   const navigate = useNavigate();
   const guestName = useRef<HTMLInputElement>(null);
-  const [_, setUser] = useRecoilState(userAtom);
+  const [, setUser] = useRecoilState(userAtom);
 
   const google = () => {
     window.open(`${BACKEND_URL}/auth/google`, '_self');
