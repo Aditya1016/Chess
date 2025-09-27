@@ -2,8 +2,12 @@ import { WebSocketServer } from 'ws';
 import { GameManager } from './GameManager';
 import url from 'url';
 import { extractAuthUser } from './auth';
+import dotenv from 'dotenv';
 
-const wss = new WebSocketServer({ port: 8080 });
+dotenv.config();
+
+const PORT = Number(process.env.PORT) || 8080; // fallback for local dev
+const wss = new WebSocketServer({ port: PORT });
 
 const gameManager = new GameManager();
 
@@ -18,4 +22,4 @@ wss.on('connection', function connection(ws, req) {
   });
 });
 
-console.log('done');
+console.log('WebSocket server is running on ws://localhost:' + PORT);
