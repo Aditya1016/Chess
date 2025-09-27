@@ -1,5 +1,5 @@
 {
-  "name": "chessnative",
+  "name": "@repo/chessnative",
   "version": "1.0.0",
   "main": "expo-router/entry",
   "scripts": {
