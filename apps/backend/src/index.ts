@@ -27,17 +27,20 @@ initPassport();
 app.use(passport.initialize());
 app.use(passport.authenticate('session'));
 
-const allowedHosts = process.env.ALLOWED_HOSTS
-  ? process.env.ALLOWED_HOSTS.split(',')
-  : [];
+const allowedHosts = process.env.NODE_ENV === 'production'
+  ? ['https://chess-frontend-pearl-one.vercel.app']
+  : ['http://localhost:5173', 'https://chess-frontend-pearl-one.vercel.app'];
 
-app.use(
-  cors({
-    origin: allowedHosts,
-    methods: 'GET,POST,PUT,DELETE',
-    credentials: true,
-  }),
-);
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedHosts.includes(origin)) return callback(null, true);
+    callback(new Error(`Origin ${origin} not allowed by CORS`));
+  },
+  methods: 'GET,POST,PUT,DELETE',
+  credentials: true,
+}));
+
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
