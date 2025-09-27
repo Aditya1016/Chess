@@ -2,6 +2,9 @@ import jwt from 'jsonwebtoken';
 import { User } from '../SocketManager';
 import { WebSocket } from 'ws';
 
+import dotenv from 'dotenv';
+dotenv.config();
+
 const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key';
 
 export interface userJwtClaims {

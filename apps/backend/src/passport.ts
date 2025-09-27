@@ -33,8 +33,8 @@ export function initPassport() {
         clientSecret: GOOGLE_CLIENT_SECRET,
         callbackURL:
           process.env.NODE_ENV === 'production'
-            ? 'https://chess-f69t.onrender.com/auth/google/callback'
-            : 'http://localhost:8080/auth/google/callback',
+            ? `https://chess-f69t.onrender.com/auth/google/callback`
+            : `http://localhost:3000/auth/google/callback`,
       },
       async function (accessToken, refreshToken, profile: GoogleProfile, done) {
         try {
@@ -81,7 +81,9 @@ export function initPassport() {
       {
         clientID: GITHUB_CLIENT_ID,
         clientSecret: GITHUB_CLIENT_SECRET,
-        callbackURL: 'http://localhost:8080/auth/github/callback',
+        callbackURL: process.env.NODE_ENV === 'production'
+          ? `https://chess-f69t.onrender.com/auth/github/callback`
+          : `http://localhost:3000/auth/github/callback`,
       } as GithubStrategyConfig,
       async function (accessToken: string, refreshToken: string, profile: GithubProfile, done: DoneCallback) {
         try {

@@ -11,7 +11,6 @@ import MovesTable from '../components/MovesTable';
 import { useUser } from '@repo/store/useUser';
 import { UserAvatar } from '../components/UserAvatar';
 
-
 // TODO: Move together, there's code repetition here
 export const INIT_GAME = 'init_game';
 export const MOVE = 'move';
@@ -47,6 +46,7 @@ import { ShareGame } from '../components/ShareGame';
 import ExitGameModel from '@/components/ExitGameModel';
 import { Result } from '@/constants/result';
 import { isPromoting } from '@/components/constants/isPromoting';
+import { motion } from 'framer-motion';
 
 const moveAudio = new Audio(MoveSound);
 
@@ -70,7 +70,7 @@ export const Game = () => {
   const [result, setResult] = useState<GameResult | null>(null);
   const [player1TimeConsumed, setPlayer1TimeConsumed] = useState(0);
   const [player2TimeConsumed, setPlayer2TimeConsumed] = useState(0);
-  const [gameID,setGameID] = useState("");
+  const [gameID, setGameID] = useState('');
   const setMoves = useSetRecoilState(movesAtom);
   const userSelectedMoveIndex = useRecoilValue(userSelectedMoveIndexAtom);
   const userSelectedMoveIndexRef = useRef(userSelectedMoveIndex);
@@ -106,8 +106,7 @@ export const Game = () => {
           });
           break;
         case MOVE:
-          const { move, player1TimeConsumed, player2TimeConsumed } =
-            message.payload;
+          const { move, player1TimeConsumed, player2TimeConsumed } = message.payload;
           setPlayer1TimeConsumed(player1TimeConsumed);
           setPlayer2TimeConsumed(player2TimeConsumed);
           if (userSelectedMoveIndexRef.current !== null) {
@@ -198,7 +197,7 @@ export const Game = () => {
           payload: {
             gameId,
           },
-        }),
+        })
       );
     }
   }, [chess, socket, gameId, setMoves, navigate]);
@@ -222,8 +221,8 @@ export const Game = () => {
     const remainingSeconds = Math.floor((timeLeftMs % (1000 * 60)) / 1000);
 
     return (
-      <div className="text-white">
-        Time Left: {minutes < 10 ? '0' : ''}
+      <div className="text-white font-mono tracking-wider transition-all duration-300">
+        ⏱ {minutes < 10 ? '0' : ''}
         {minutes}:{remainingSeconds < 10 ? '0' : ''}
         {remainingSeconds}
       </div>
@@ -231,120 +230,131 @@ export const Game = () => {
   };
 
   const handleExit = () => {
-    socket?.send(
-      JSON.stringify({
-        type: EXIT_GAME,
-        payload: {
-          gameId,
-        },
-      }),
-    );
+    socket?.send(JSON.stringify({ type: EXIT_GAME, payload: { gameId } }));
     setMoves([]);
     navigate('/');
   };
 
-  if (!socket) return <div>Connecting...</div>;
+  if (!socket) return <div className="text-white text-center mt-20">Connecting...</div>;
 
   return (
-    <div className="">
+    <div className="relative">
+      {/* Game End Modal */}
       {result && (
-        <GameEndModal
-          blackPlayer={gameMetadata?.blackPlayer}
-          whitePlayer={gameMetadata?.whitePlayer}
-          gameResult={result}
-        ></GameEndModal>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <GameEndModal
+            blackPlayer={gameMetadata?.blackPlayer}
+            whitePlayer={gameMetadata?.whitePlayer}
+            gameResult={result}
+          />
+        </motion.div>
       )}
+
+      {/* Turn Indicator */}
       {started && (
-        <div className="justify-center flex pt-4 text-white">
-          {(user.id === gameMetadata?.blackPlayer?.id ? 'b' : 'w') ===
-          chess.turn()
-            ? 'Your turn'
-            : "Opponent's turn"}
-        </div>
+        <motion.div
+          className="justify-center flex pt-4 text-white font-bold text-xl"
+          animate={{ scale: [1, 1.05, 1] }}
+          transition={{ repeat: Infinity, duration: 1.2 }}
+        >
+          {(user.id === gameMetadata?.blackPlayer?.id ? 'b' : 'w') === chess.turn() ? 'Your Turn' : "Opponent's Turn"}
+        </motion.div>
       )}
-      <div className="justify-center flex">
+
+      <div className="justify-center flex mt-2">
         <div className="pt-2 w-full">
           <div className="flex gap-8 w-full">
-            <div className="text-white">
-              <div className="flex justify-center">
-                <div>
-                  {started && (
-                    <div className="mb-4">
-                      <div className="flex justify-between">
-                        <UserAvatar gameMetadata={gameMetadata} />
-                        {getTimer(
-                          user.id === gameMetadata?.whitePlayer?.id
-                            ? player2TimeConsumed
-                            : player1TimeConsumed,
-                        )}
-                      </div>
-                    </div>
-                  )}
-                  <div>
-                    <div className={`w-full flex justify-center text-white`}>
-                      <ChessBoard
-                        started={started}
-                        gameId={gameId ?? ''}
-                        myColor={
-                          user.id === gameMetadata?.blackPlayer?.id ? 'b' : 'w'
-                        }
-                        chess={chess}
-                        setBoard={setBoard}
-                        socket={socket}
-                        board={board}
-                      />
-                    </div>
-                  </div>
-                  {started && (
-                    <div className="mt-4 flex justify-between">
-                      <UserAvatar gameMetadata={gameMetadata} self />
-                      {getTimer(
-                        user.id === gameMetadata?.blackPlayer?.id
-                          ? player2TimeConsumed
-                          : player1TimeConsumed,
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
+            {/* ChessBoard Section */}
+            <div className="text-white flex flex-col items-center gap-4">
+              {started && (
+                <motion.div
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="flex justify-between w-full mb-4"
+                >
+                  <UserAvatar gameMetadata={gameMetadata} />
+                  {getTimer(user.id === gameMetadata?.whitePlayer?.id ? player2TimeConsumed : player1TimeConsumed)}
+                </motion.div>
+              )}
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                className="w-full flex justify-center"
+              >
+                <ChessBoard
+                  started={started}
+                  gameId={gameId ?? ''}
+                  myColor={user.id === gameMetadata?.blackPlayer?.id ? 'b' : 'w'}
+                  chess={chess}
+                  setBoard={setBoard}
+                  socket={socket}
+                  board={board}
+                />
+              </motion.div>
+
+              {started && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="mt-4 flex justify-between w-full"
+                >
+                  <UserAvatar gameMetadata={gameMetadata} self />
+                  {getTimer(user.id === gameMetadata?.blackPlayer?.id ? player2TimeConsumed : player1TimeConsumed)}
+                </motion.div>
+              )}
             </div>
-            <div className="rounded-md pt-2 bg-bgAuxiliary3 flex-1 overflow-auto h-[95vh] overflow-y-scroll no-scrollbar">
+
+            {/* Moves / Controls Section */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              className="rounded-md pt-2 bg-bgAuxiliary3 flex-1 overflow-auto h-[95vh] no-scrollbar"
+            >
               {!started ? (
-                <div className="pt-8 flex justify-center w-full">
+                <div className="pt-8 flex flex-col items-center gap-4">
                   {added ? (
-                    <div className='flex flex-col items-center space-y-4 justify-center'>
-                      <div className="text-white"><Waitopponent/></div>
-                      <ShareGame gameId={gameID}/>
-                    </div>
+                    <>
+                      <Waitopponent />
+                      <ShareGame gameId={gameID} />
+                    </>
                   ) : (
                     gameId === 'random' && (
-                      <Button
-                        onClick={() => {
-                          socket.send(
-                            JSON.stringify({
-                              type: INIT_GAME,
-                            }),
-                          );
-                        }}
-                      >
-                        Play
-                      </Button>
+                      <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }}>
+                        <Button
+                          onClick={() => {
+                            socket.send(JSON.stringify({ type: INIT_GAME }));
+                          }}
+                        >
+                          Play
+                        </Button>
+                      </motion.div>
                     )
                   )}
                 </div>
               ) : (
                 <div className="p-8 flex justify-center w-full">
-                  <ExitGameModel onClick={() => handleExit()} />
+                  <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }}>
+                    <ExitGameModel onClick={handleExit} />
+                  </motion.div>
                 </div>
               )}
-              <div>
+
+              <div className="p-2">
                 <MovesTable />
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
     </div>
   );
 };
-
