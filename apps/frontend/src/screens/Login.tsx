@@ -85,7 +85,7 @@ const Login = () => {
             type="text"
             ref={guestName}
             placeholder="Username"
-            className="border border-gray-300 px-4 py-2 rounded-md w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-green-400 transition-all duration-300"
+            className="border border-gray-300 px-4 py-2 rounded-md w-full md:w-64 focus:outline-none text-gray-700 focus:ring-2 focus:ring-green-400 transition-all duration-300"
           />
 
           <motion.button

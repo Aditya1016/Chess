@@ -46,8 +46,8 @@ const ContributeSection = () => {
           className="rounded-xl flex justify-center lg:justify-start"
         >
           <img
-            className="max-w-[420px] w-full hover:scale-105 transition-transform duration-500"
-            src="https://res.cloudinary.com/dcugqfvvg/image/upload/v1713657312/undraw_questions_re_1fy7_kqjpu3.svg"
+            className="max-w-[420px] w-full hover:scale-105 transition-transform duration-500 rounded-xl shadow-lg"
+            src="https://images.unsplash.com/photo-1604964432806-254d07c11f32?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             alt="issue-illustration"
           />
         </motion.div>
@@ -59,12 +59,9 @@ const ContributeSection = () => {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="mt-10 lg:mt-0 space-y-6"
         >
-          <h1 className="text-5xl lg:text-6xl font-bold text-left animate-[fadeIn_1s]">
-            Found an Issue?
-          </h1>
+          <h1 className="text-5xl lg:text-6xl font-bold text-left animate-[fadeIn_1s]">Found an Issue?</h1>
           <p className="text-lg lg:text-xl text-left text-muted-foreground">
-            Please create an issue on our GitHub page below. You are also welcome to
-            contribute and improve the project.
+            Please create an issue on our GitHub page below. You are also welcome to contribute and improve the project.
           </p>
           <Button
             asChild
@@ -73,17 +70,17 @@ const ContributeSection = () => {
             className="w-full md:w-fit px-6 py-6 rounded-2xl text-2xl gap-4 shadow-sm hover:shadow-lg hover:scale-105 transition-all duration-300"
           >
             <a
-              href="https://github.com/code100x/chess/issues"
+              href="https://github.com/Aditya1016/Chess/issues"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-4"
+              className="flex items-center justify-center gap-4"
             >
               <img
-                className="w-12 h-12"
-                src="https://res.cloudinary.com/dcugqfvvg/image/upload/v1713657100/github-svgrepo-com_uosbko.svg"
+                className="w-12 h-12 rounded-full object-cover"
+                src="https://images.unsplash.com/photo-1618401479427-c8ef9465fbe1?q=80&w=1143&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 alt="github-icon"
               />
-              <span className="text-3xl font-semibold">GitHub</span>
+              <span className="text-3xl text-black font-semibold">GitHub</span>
             </a>
           </Button>
         </motion.div>

@@ -9,4 +9,9 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    cors: {
+      origin: 'https://res.cloudinary.com',
+    },
+  },
 });
